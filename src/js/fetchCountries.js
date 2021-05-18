@@ -9,6 +9,5 @@ export function fetchCountries(name) {
                 }
                 throw new Error (response.statusText)
             })
-            
 }
 

@@ -37,7 +37,7 @@ function checkingNumberOfCountries(countries) {
     renderMarkup(countryTpl, countries[0]);
   } else {
       errorResult()
-  }
+  };
 }
 
 function renderMarkup(countryListTpl, countries) {
