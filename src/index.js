@@ -3,10 +3,8 @@ import debounce from 'lodash.debounce';
 import { fetchCountries } from './js/fetchCountries';
 import countryListTpl from './templates/render-countries-list.hbs';
 import countryTpl from './templates/render-country.hbs';
+import {  msgTooManyCountries } from './js/pnotify';
 
-import { info, error } from '@pnotify/core';
-import '@pnotify/core/dist/PNotify.css';
-import '@pnotify/core/dist/BrightTheme.css';
 
 const refs = {
   input: document.querySelector('.input'),
@@ -15,29 +13,26 @@ const refs = {
 
 refs.input.addEventListener('input', debounce(onInputSearch, 500));
 
-function onInputSearch(event) {
-  const name = event.target.value;
-//   console.log(name);
+function onInputSearch() {
+  reset();
+
+  const name = refs.input.value;
+
   fetchCountries(name)
     .then(checkingNumberOfCountries)
     .catch(catchError);
-    event.target.value = '';
+  
 }
 
 function checkingNumberOfCountries(countries) {
-//   console.log(countries);
+  if (countries.length === 1) {
+  renderMarkup(countryTpl, countries[0])}
+
+  if (countries.length <= 10 && countries.length > 1) {
+    renderMarkup(countryListTpl, countries)}
+    
   if (countries.length > 10) {
-    clearMarkup();
-    tooManyCountries();
-  } else if (countries.length <= 10 && countries.length > 1) {
-    clearMarkup();
-    renderMarkup(countryListTpl, countries);
-  } else if (countries.length === 1) {
-    clearMarkup();
-    renderMarkup(countryTpl, countries[0]);
-  } else {
-      errorResult()
-  };
+    msgTooManyCountries()}
 }
 
 function renderMarkup(countryListTpl, countries) {
@@ -45,26 +40,7 @@ function renderMarkup(countryListTpl, countries) {
   refs.cardContainer.insertAdjacentHTML('beforeend', murkup);
 }
 
-function clearMarkup() {
+function reset() {
   refs.cardContainer.innerHTML = '';
 }
 
-function tooManyCountries() {
-    error({
-        text: 'Too many matches found. Please enter a more specific query!',
-        delay: 3500,
-        closerHover: true,
-      });
-}
-
-function errorResult () {
-    error({
-        text: 'Nothing found. Please enter a valid request',
-        delay: 3500,
-        closerHover: true,
-      });
-}
-
-function catchError(error) {
-  console.log(error);
-}
