@@ -11,3 +11,14 @@ export function fetchCountries(name) {
             })
 }
 
+// export const fetchCountries = async(name) => {
+//     const url = `${baseURL}/name/${name}`;
+//     try {    
+//         const response = await fetch(url);
+//         const countries = response.json();
+//         return countries;}  
+//     catch (error) {
+//         console.log(error);
+//     }
+// }
+
